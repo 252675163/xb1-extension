@@ -1,65 +1,75 @@
-# wordcount README
-
-This is the README for your extension "wordcount". After writing up a brief description, we recommend including the following sections.
+# Code Outline tree provider for Visual Studio Code
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Displays a code outline tree in the explorer pane.
 
-For example if there is an image subfolder under your extension project workspace:
+To activate find and expand the "Code Outline" section near the bottom of the Explorer tab.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Language Support
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+For the outline to work, the language support plugins need to support symbol information.
 
-## Requirements
+For the outline to form a tree structure, the language support plugins need to report the entire definition range as part of symbol.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+See VS Code [issue #34968](https://github.com/Microsoft/vscode/issues/34968) and language server protocol [issue #132](https://github.com/Microsoft/language-server-protocol/issues/132) for a discussion.
+
+Here is a list of languages known to work with Code Outline:
+
+| Language/Format | Extension |
+| --- | --- |
+| C | [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) |
+| C++ | [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools), [cquery](https://github.com/cquery-project/vscode-cquery) |
+| Docker | [Docker](https://marketplace.visualstudio.com/items?itemName=PeterJausovec.vscode-docker) |
+| HTML | Comes with VS Code |
+| JavaScript | Comes with VS Code |
+| JSON | Comes with VS Code |
+| Markdown | Comes with VS Code |
+| Perl | [Perl](https://marketplace.visualstudio.com/items?itemName=henriiik.vscode-perl) |
+| PHP | [PHP Symbols](https://marketplace.visualstudio.com/items?itemName=linyang95.php-symbols) |
+| Python | [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) |
+| TypeScript | Comes with VS Code |
+| YAML | [YAML Support by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) |
+
+Please report any missing extensions and I'll update the list.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Default settings:
 
-For example:
+```json
+{
+  "symbolOutline.doSort": false,
+  "symbolOutline.sortOrder": [
+    "Class",
+    "Module",
+    "Constant",
+    "Interface",
+    "*",
+    "Constructor",
+    "Function",
+    "Method"
+  ],
+  "symbolOutline.expandNodes": [
+    "Module",
+    "Class",
+    "Interface",
+    "Namespace",
+    "Object",
+    "Package",
+    "Struct"
+  ],
+  "symbolOutline.topLevel": [
+    "*"
+  ]
+}
+```
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+- **doSort:** sort the outline.
+- **expandNodes:** kinds of nodes to be expanded automatically.
+- **sortOrder:** order to the sort symbols.
+- **topLevel:** wich symbols include at the topmost scope.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Depending on other extensions you have installed the symbol list may initially return an empty list. Use the "Refresh" button next to the title to fix this.

@@ -1,70 +1,124 @@
 {
-    "name": "xb1",
-    "displayName": "xb1",
-    "description": "",
-    "version": "0.0.1",
-    "publisher": "252675163",
+    "name": "vscode-code-outline",
+    "displayName": "Code Outline",
+    "description": "A code outline tree provider for VSCode",
+    "version": "0.1.1",
+    "publisher": "patrys",
+    "homepage": "https://github.com/patrys/vscode-code-outline",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/patrys/vscode-code-outline"
+    },
+    "icon": "resources/icon.png",
+    "galleryBanner": {
+        "color": "#292d3e",
+        "theme": "dark"
+    },
     "engines": {
         "vscode": "^1.22.0"
     },
     "categories": [
         "Other"
     ],
-    "main": "./out/extension",
     "activationEvents": [
-        "onView:xb1"
+        "onView:symbolOutline"
     ],
+    "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "xb1.refresh",
-                "title": "刷新xb1",
+                "command": "symbolOutline.refresh",
+                "title": "Refresh code outline",
                 "icon": {
                     "dark": "resources/dark/icon-refresh.svg",
                     "light": "resources/light/icon-refresh.svg"
                 }
             },
             {
-                "command": "xb1.revealCurrentSymbol",
-                "title": "在左侧的xb1中展示"
+                "command": "symbolOutline.revealCurrentSymbol",
+                "title": "Show in code outline"
             }
         ],
         "views": {
             "explorer": [
                 {
-                    "id": "xb1",
-                    "name": "xb1组件"
+                    "id": "symbolOutline",
+                    "name": "Code Outline"
                 }
             ]
         },
         "menus": {
             "editor/context": [
                 {
-                    "command": "xb1.revealCurrentSymbol",
+                    "command": "symbolOutline.revealCurrentSymbol",
                     "group": "navigation"
                 }
             ],
             "view/title": [
                 {
-                    "command": "xb1.refresh",
-                    "when": "view == xb1",
+                    "command": "symbolOutline.refresh",
+                    "when": "view == symbolOutline",
                     "group": "navigation"
                 }
             ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Code Outline configuration",
+            "properties": {
+                "symbolOutline.doSort": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Sort the outline"
+                },
+                "symbolOutline.expandNodes": {
+                    "type": "array",
+                    "default": [
+                        "Module",
+                        "Class",
+                        "Interface",
+                        "Namespace",
+                        "Object",
+                        "Package",
+                        "Struct"
+                    ],
+                    "description": "Kinds of nodes to be expanded automatically."
+                },
+                "symbolOutline.sortOrder": {
+                    "type": "array",
+                    "default": [
+                        "Class",
+                        "Module",
+                        "Constant",
+                        "Interface",
+                        "*",
+                        "Constructor",
+                        "Function",
+                        "Method"
+                    ],
+                    "description": "Order to the sort symbols in, if sorted.  * is placeholder for all symbols not explicitly listed."
+                },
+                "symbolOutline.topLevel": {
+                    "type": "array",
+                    "default": [
+                        "*"
+                    ],
+                    "description": "Which symbols to include at the topmost scope.  * includes everything."
+                }
+            }
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+        "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
-        "tslint": "^5.8.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
     }
 }
