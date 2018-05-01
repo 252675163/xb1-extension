@@ -17,11 +17,12 @@ import {
   commands,
   window,
   workspace,
-  Position
+  Position,
+  Uri
 } from "vscode";
 
 import { getIcon } from "./icons";
-let path = require("path")
+let path = require("path");
 export function activate(context: vscode.ExtensionContext) {
   const symbolOutlineProvider = new Xb1(context);
 }
@@ -59,17 +60,21 @@ export class Xb1TreeDataProvider
 
   constructor(context: ExtensionContext) {
     this.context = context;
+    
   }
 
-  private getSymbols(document: TextDocument): Thenable<SymbolInformation[]> {
+  private getSymbols(uri:Uri): Thenable<SymbolInformation[]> {
     return commands.executeCommand<SymbolInformation[]>(
       "vscode.executeDocumentSymbolProvider",
-      document.uri
+      uri
     );
   }
 
 
   private async updateSymbols(editor: TextEditor): Promise<void> {
+    let pp=path.join(workspace.rootPath,"/common.js")
+    let uri=Uri.file(pp);
+    let uu=await this.getSymbols(uri);
     const a= new SymbolNode();
     const tree = new SymbolNode();
     this.editor = editor;
