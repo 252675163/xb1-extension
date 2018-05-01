@@ -1,37 +1,65 @@
-# vscode extension
+# wordcount README
 
-#### 项目介绍
-xb1扩展
+This is the README for your extension "wordcount". After writing up a brief description, we recommend including the following sections.
 
-#### 软件架构
-软件架构说明
+## Features
 
+Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
-#### 安装教程
+For example if there is an image subfolder under your extension project workspace:
 
-1. xxxx
-2. xxxx
-3. xxxx
+\!\[feature X\]\(images/feature-x.png\)
 
-#### 使用说明
+> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-1. xxxx
-2. xxxx
-3. xxxx
+## Requirements
 
-#### 参与贡献
+If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
-1. Fork 本项目
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+## Extension Settings
 
+Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
-#### 码云特技
+For example:
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [http://git.mydoc.io/](http://git.mydoc.io/)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+This extension contributes the following settings:
+
+* `myExtension.enable`: enable/disable this extension
+* `myExtension.thing`: set to `blah` to do something
+
+## Known Issues
+
+Calling out known issues can help limit users opening duplicate issues against your extension.
+
+## Release Notes
+
+Users appreciate release notes as you update your extension.
+
+### 1.0.0
+
+Initial release of ...
+
+### 1.0.1
+
+Fixed issue #.
+
+### 1.1.0
+
+Added features X, Y, and Z.
+
+-----------------------------------------------------------------------------------------------------------
+
+## Working with Markdown
+
+**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+
+* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
+* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
+* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
+
+### For more information
+
+* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
+* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+
+**Enjoy!**
