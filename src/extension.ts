@@ -22,17 +22,32 @@ import {
 } from "vscode";
 
 import { getIcon } from "./icons";
-let path = require("path");
+import path = require("path");
+import fs =require("fs")
+import opn = require("opn")
 export function activate(context: vscode.ExtensionContext) {
   const symbolOutlineProvider = new Xb1(context);
+}
+
+class NodeInfo{
+  tooltip?:string;
+  label:string;
+  type:Number;
+  detail:string;
+}
+class ONode extends NodeInfo{
+  pk:string;
+  children:ONode[];
+  parent:ONode;
 }
 class SymbolNode {
   parent?: SymbolNode;
   symbol: SymbolInformation;
   children: SymbolNode[];
-
+  info:NodeInfo;
   constructor(symbol?: SymbolInformation) {
     this.children = [];
+    this.info = new NodeInfo()
     this.symbol = symbol;
   }
 }
@@ -45,6 +60,12 @@ class Xb1 {
     });
     commands.registerCommand("xb1.refresh", () => {
       treeDataProvider.refresh();
+    });
+    commands.registerCommand("xb1.openUri", (uri:String) => {
+      if(uri.length>0)opn(uri);
+    });
+    commands.registerCommand("xb1.openUri1", (node:SymbolNode) => {
+      opn(node.info.detail);
     });
   }
 }
@@ -72,20 +93,35 @@ export class Xb1TreeDataProvider
 
 
   private async updateSymbols(editor: TextEditor): Promise<void> {
-    let pp=path.join(workspace.rootPath,"/common.js")
-    let uri=Uri.file(pp);
-    let uu=await this.getSymbols(uri);
-    const a= new SymbolNode();
-    const tree = new SymbolNode();
-    this.editor = editor;
-    let c=new SymbolNode()
-    tree.children.push(c)
-    c.parent=tree;
-    tree.parent=a;
-    a.children.push(tree)
-    this.tree = a;
+    let configFile=path.join(workspace.rootPath,"/xb1Extension.js");
+    const root= new SymbolNode();
+    if(fs.existsSync(configFile)){
+      let uri=Uri.file(configFile);
+      let symbolNodeArr=await this.getSymbols(uri);
+      let rootM:ONode = require(configFile);
+      this.mixNode(null,root,rootM,symbolNodeArr)
+    }else{
+      const tree = new SymbolNode();
+      tree.parent=root;
+      tree.info.label="'xb1Extension.js' is not found"
+      root.children.push(tree)
+    }
+    this.tree = root;
   }
-
+  private mixNode(parentNode:SymbolNode,mix:SymbolNode,onode:ONode,symbolNodeArr:SymbolInformation[]):void{
+    if(parentNode){
+      mix.parent=parentNode
+      parentNode.children.push(mix)
+    }
+    mix.info=onode
+    mix.symbol=symbolNodeArr.find(i=>i.name===onode.pk)
+    if(onode.children.length>0){
+      onode.children.forEach((item)=>{
+        let newNode = new SymbolNode()
+        this.mixNode(mix,newNode,item,symbolNodeArr)
+      })
+    }
+  }
   async getChildren(node?: SymbolNode): Promise<SymbolNode[]> {
     if (node) {
       return node.children;
@@ -103,18 +139,18 @@ export class Xb1TreeDataProvider
     if(!node){
       debugger
     }
-    let treeItem = new TreeItem("试试");
+    let treeItem = new TreeItem(node.info.label);
     if (node.children.length) {
       treeItem.collapsibleState =TreeItemCollapsibleState.Expanded
     } else {
       treeItem.collapsibleState = TreeItemCollapsibleState.None;
     }
     treeItem.command = {
-      command: "xb1.revealRange",
-      title: "",
-      arguments: [this.editor]
+      command: "xb1.openUri",
+      title: "打开跳转地址",
+      arguments: [node.info.detail]
     };
-
+    treeItem.tooltip =node.info.tooltip;
     treeItem.iconPath = getIcon(1, this.context);
     return treeItem;
   }
