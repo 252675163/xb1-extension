@@ -2,7 +2,7 @@
     "name": "vscode-code-xb1",
     "displayName": "xb1",
     "description": "xb1 tree provider for VSCode",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "publisher": "252675163",
     "homepage": "https://gitee.com/wszdw/vscode-extension-xb1",
     "repository": {
