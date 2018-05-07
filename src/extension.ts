@@ -76,15 +76,14 @@ class Xb1 {
     });
     commands.registerCommand("xb1.execCMD", (node:SymbolNode) => {
       if(cmdContainer){
-        cmdContainer.kill("REPLACED")
+        cmdContainer.kill()
       }
-      cmdContainer=cp.exec(node.info.detail, { encoding: binaryEncoding }, (err, stdout, stderr) => {
-        myOutputChannel.append(iconv.decode(new Buffer(stdout.toString(), binaryEncoding), encoding));
+      cmdContainer=cp.exec(node.info.detail, {cwd: workspace.rootPath}, (err, stdout, stderr) => {
+        myOutputChannel.append(stdout);
         if (err) {
-          myOutputChannel.append('error: ' + iconv.decode(new Buffer(stderr.toString(), binaryEncoding), encoding));
+          myOutputChannel.append('error: ' + stderr);
         }
       });
-      debugger
     });
   }
 }
