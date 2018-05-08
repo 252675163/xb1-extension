@@ -33,6 +33,14 @@
                     "dark": "resources/dark/icon-refresh.svg",
                     "light": "resources/light/icon-refresh.svg"
                 }
+            },
+            {
+                "command": "xb1.command1",
+                "title": "命令1",
+                "icon": {
+                    "dark": "resources/dark/icon-refresh.svg",
+                    "light": "resources/light/icon-refresh.svg"
+                }
             }
         ],
         "views": {
@@ -50,6 +58,9 @@
                     "when": "view == xb1",
                     "group": "navigation"
                 }
+            ],
+            "view/item/context": [
+                {"command": "xb1.command1"}
             ]
         }
     },
