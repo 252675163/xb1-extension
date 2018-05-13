@@ -35,8 +35,8 @@
                 }
             },
             {
-                "command": "xb1.command1",
-                "title": "命令1",
+                "command": "xb1.location",
+                "title": "在文档中编辑此配置",
                 "icon": {
                     "dark": "resources/dark/icon-refresh.svg",
                     "light": "resources/light/icon-refresh.svg"

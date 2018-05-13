@@ -18,6 +18,7 @@ import {
   window,
   workspace,
   Position,
+  TextDocumentShowOptions,
   Uri
 } from "vscode";
 
@@ -32,7 +33,7 @@ var iconv = require('iconv-lite');
 var encoding = 'cp936';
 var binaryEncoding = 'binary';
 import cp = require('child_process')
-let cmdContainer;
+let cmdContainer,configFileUri:Uri;
 enum NodeType {
   Root = 0,
   Uri,
@@ -49,15 +50,26 @@ class ONode extends NodeInfo{
   children:ONode[];
   parent:ONode;
 }
-class SymbolNode {
+class SymbolNode extends TreeItem {
   parent?: SymbolNode;
   symbol: SymbolInformation;
   children: SymbolNode[];
   info:NodeInfo;
   constructor(symbol?: SymbolInformation) {
+    super("")
     this.children = [];
     this.info = new NodeInfo()
     this.symbol = symbol;
+  }
+}
+
+class TreeItemWithMsg extends TreeItem {
+  symbol: SymbolInformation;
+  info:NodeInfo;
+  constructor(label:string,symbol?:SymbolInformation){
+    super(label);
+    this.symbol = symbol;
+    this.info =new NodeInfo();
   }
 }
 class Xb1 {
@@ -74,6 +86,10 @@ class Xb1 {
     commands.registerCommand("xb1.openUri", (uri:String) => {
       if(uri.length>0)opn(uri);
     });
+    context.subscriptions.push(commands.registerCommand("xb1.location", async(node:SymbolNode) => {
+      await window.showTextDocument(node.symbol.location.uri,{selection:node.symbol.location.range})
+
+    }))
     commands.registerCommand("xb1.execCMD", (node:SymbolNode) => {
       if(cmdContainer){
         cmdContainer.kill()
@@ -115,22 +131,28 @@ export class Xb1TreeDataProvider
     let configFile=path.join(workspace.rootPath,"/xb1Extension.js");
     const root= new SymbolNode();
     if(fs.existsSync(configFile)){
-      let uri=Uri.file(configFile);
+      let uri=configFileUri=Uri.file(configFile);
       await commands.executeCommand<SymbolInformation[]>(
         "vscode.open",
         uri
       );
-      let symbolNodeArr=await this.getSymbols(uri);
+      //非常地有毒，如果只是打开一次下面的symbolNodeArr是获取不到的
+      await commands.executeCommand<SymbolInformation[]>(
+        "vscode.open",
+        uri
+      );
       delete require.cache[configFile]
       let rootM:ONode = require(configFile);
+      let symbolNodeArr=await this.getSymbols(uri);
       this.mixNode(null,root,rootM,symbolNodeArr)
-    }else{
-      const tree = new SymbolNode();
-      tree.parent=root;
-      tree.info.label="'xb1Extension.js' is not found"
-      root.children.push(tree)
+      this.tree = root;
+      return 
     }
-    this.tree = root;
+    const tree = new SymbolNode();
+    tree.parent=root;
+    tree.info.label="'xb1Extension.js' is not found"
+    root.children.push(tree)
+    
   }
   private mixNode(parentNode:SymbolNode,mix:SymbolNode,onode:ONode,symbolNodeArr:SymbolInformation[]):void{
     if(parentNode){
@@ -159,16 +181,17 @@ export class Xb1TreeDataProvider
     return node.parent;
   }
 
-  getTreeItem(node: SymbolNode): TreeItem {
+  getTreeItem(node: SymbolNode): SymbolNode {
     if(!node){
       debugger
     }
-    let treeItem = new TreeItem(node.info.label);
+    let treeItem = node;
     if (node.children.length) {
       treeItem.collapsibleState =TreeItemCollapsibleState.Expanded
     } else {
       treeItem.collapsibleState = TreeItemCollapsibleState.None;
     }
+    treeItem.label = node.info.label;
     if(node.info.type===NodeType.Uri){
       treeItem.command = {
         command: "xb1.openUri",
@@ -185,6 +208,7 @@ export class Xb1TreeDataProvider
     
     treeItem.tooltip =node.info.tooltip;
     treeItem.iconPath = getIcon(1, this.context);
+    treeItem.info = node.info;
     return treeItem;
   }
 
