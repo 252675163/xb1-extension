@@ -60,7 +60,7 @@
                 }
             ],
             "view/item/context": [
-                {"command": "xb1.command1"}
+                {"command": "xb1.location","when": "view==xb1"}
             ]
         }
     },
